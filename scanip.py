@@ -10,7 +10,7 @@ def scan_devices_in_network(network_prefix, start_range, end_range, timeout=1):
         target_ip = f"{network_prefix}.{i}"
         target_address = (target_ip, 22)  # Using port 22 (SSH) for reachability check
 
-        # Check if the host is reachables
+        # Check if the host is reachable
         try:
             socket.create_connection(target_address, timeout=timeout)
             reachable_devices.append(target_ip)
@@ -39,7 +39,7 @@ def run_ansible_playbook():
         print(f"Error running Ansible playbook: {e}")
 
 if __name__ == "__main__":
-    # Define your network details / Problem on collect connected ip on local device
+    # Define your network details
     network_prefix = "192.168.1"  # Change this to your network's prefix of the device
     start_range = 34
     end_range = 50  # Adjust the range based on your network sizes

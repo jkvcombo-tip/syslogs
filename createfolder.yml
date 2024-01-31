@@ -1,8 +1,7 @@
-# tryfolder.yml
 ---
 - name: Create main folder and subfolders, convert syslog to CSV, and copy to sub1
-  hosts: localhost
-  
+  hosts: all  # Change to 'all' to apply to all hosts in the inventory
+
   vars:
     main_folder_path: "./SYSLOG/"
     script_path: "./convert_syslog.py"
@@ -23,18 +22,19 @@
         path: "{{ main_folder_path }}/INTERMEDIARY DEVICE"
         state: directory
 
-    - name: Copy Python script to local machine
+    - name: Copy Python script to remote machine
       copy:
         src: "convert_syslog.py"
         dest: "{{ script_path }}"
         mode: '0755'
 
-    - name: Convert syslog to CSV using Python script
+    - name: Convert syslog to CSV using Python script on remote machine
       command: python3 "{{ script_path }}"
       args:
-        creates: "{{ main_folder_path }}/END DEVICE/end-device_syslog.csv"
-    #copys
-    - name: Copy syslog.csv file to END DEVICE
-      copy:
+        chdir: "{{ main_folder_path }}/END DEVICE/"
+        creates: "end-device_syslog.csv"
+
+    - name: Copy syslog.csv file from remote machine to END DEVICE folder
+      fetch:
         src: "{{ main_folder_path }}/END DEVICE/end-device_syslog.csv"
-        dest: "{{ main_folder_path }}/END DEVICE/end-device_syslog.csv"
+        dest: "{{ main_folder_path }}/END DEVICE/"
